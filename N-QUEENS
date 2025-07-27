@@ -1,0 +1,79 @@
+def is_safe(board, row, col, n):
+    """
+    Check if a queen can be placed at board[row][col].
+    It checks:
+    1. The left side of the current row.
+    2. The upper-left diagonal.
+    3. The lower-left diagonal.
+    """
+
+    # Check left side of the current row
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check upper-left diagonal
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j -= 1
+
+    # Check lower-left diagonal
+    i, j = row, col
+    while i < n and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+
+
+def solve_n_queens(board, col, n, solutions):
+    """
+    Backtracking function:
+    - Tries to place a queen in each row of the current column.
+    - If it reaches the last column, stores the solution.
+    """
+    if col == n:
+        # Found a valid solution; store a copy of the board
+        solutions.append([row[:] for row in board])
+        return
+
+    for row in range(n):
+        if is_safe(board, row, col, n):
+            board[row][col] = 1  # Place queen
+            solve_n_queens(board, col + 1, n, solutions)
+            board[row][col] = 0  # Backtrack
+
+
+def print_solutions(solutions):
+    """Prints all solutions in a readable format."""
+    for idx, board in enumerate(solutions, 1):
+        print(f"Solution {idx}:")
+        for row in board:
+            print(row)
+        print()
+
+
+def solve(n):
+    """Main function to find and print all N-Queens solutions."""
+    board = [[0] * n for _ in range(n)]
+    solutions = []
+    solve_n_queens(board, 0, n, solutions)
+
+    if solutions:
+        print(f"Total solutions for N={n}: {len(solutions)}\n")
+        print_solutions(solutions)
+    else:
+        print("No solution exists")
+
+
+# -------------------------------
+# Run Program
+# -------------------------------
+if __name__ == "__main__":
+    n = int(input("Enter number of queens (N): "))
+    solve(n)

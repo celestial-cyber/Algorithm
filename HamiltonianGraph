@@ -1,0 +1,70 @@
+def is_safe(graph, vertex, path):
+    """
+    Check if we can add 'vertex' to the Hamiltonian path:
+    1. There must be an edge from the last vertex in path to 'vertex'.
+    2. 'vertex' must not already be in the path (no repeats).
+    """
+    if graph[path[-1]][vertex] == 0 or vertex in path:
+        return False
+    return True
+
+
+def hamiltonian_circuit(graph, path, pos, n):
+    """
+    Recursive function to find a Hamiltonian Circuit:
+    - graph: adjacency matrix
+    - path: current path list
+    - pos: current position in the path
+    - n: number of vertices
+    """
+
+    # ✅ Base case: all vertices are in the path
+    if pos == n:
+        # Check if there is a return edge to the start
+        return graph[path[-1]][path[0]] == 1
+
+    # Try adding each vertex as next candidate
+    for v in range(n):
+        if is_safe(graph, v, path):
+            path.append(v)
+
+            # Recurse for the next vertex
+            if hamiltonian_circuit(graph, path, pos + 1, n):
+                return True
+
+            # ❌ Backtrack if it doesn't lead to a solution
+            path.pop()
+
+    return False
+
+
+def get_user_input():
+    """
+    Reads input:
+    1. Number of vertices
+    2. Adjacency matrix
+    3. Starting vertex
+    """
+    n = int(input("Enter number of vertices: "))
+    print("Enter adjacency matrix (row-wise):")
+    graph = []
+    for i in range(n):
+        row = list(map(int, input(f"Row {i + 1}: ").split()))
+        graph.append(row)
+
+    start = int(input("Enter starting vertex (0-indexed): "))
+    return graph, start, n
+
+
+# -------------------------------
+# Main
+# -------------------------------
+if __name__ == "__main__":
+    graph, start, n = get_user_input()
+    path = [start]
+
+    if hamiltonian_circuit(graph, path, 1, n):
+        path.append(start)  # Complete the cycle
+        print("Hamiltonian Circuit Found:", path)
+    else:
+        print("No Hamiltonian Circuit Found.")

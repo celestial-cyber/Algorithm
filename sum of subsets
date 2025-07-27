@@ -1,0 +1,36 @@
+def find_subset_sum(arr, target, index, subset):
+    """
+    Recursive function to find a subset that adds up to 'target'.
+    - arr: list of numbers
+    - target: required sum
+    - index: current index in the array
+    - subset: current subset being built
+    """
+
+    # ✅ Base case: target achieved
+    if target == 0:
+        print(f"Subset found: {subset}")
+        return True
+
+    # ❌ If no elements left or target becomes negative
+    if index >= len(arr) or target < 0:
+        return False
+
+    # ✅ Option 1: Include current element
+    include = find_subset_sum(arr, target - arr[index], index + 1, subset + [arr[index]])
+
+    # ✅ Option 2: Exclude current element
+    exclude = find_subset_sum(arr, target, index + 1, subset)
+
+    # Return True if either inclusion or exclusion finds a valid subset
+    return include or exclude
+
+
+# -------------------------------
+# Main Program
+# -------------------------------
+if __name__ == "__main__":
+    arr = list(map(int, input("Enter the list of numbers: ").split()))
+    target = int(input("Enter the target sum: "))
+    if not find_subset_sum(arr, target, 0, []):
+        print("No subset found.")
