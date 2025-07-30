@@ -1,0 +1,76 @@
+def helper(maze, r, c, path, ans, visited):
+    n = len(maze)
+
+    # Boundary + invalid checks
+    if r < 0 or c < 0 or r >= n or c >= n or maze[r][c] == 0 or visited[r][c]:
+        return
+
+    # Destination reached
+    if r == n - 1 and c == n - 1:
+        ans.append(path)
+        return
+
+    # Mark as visited
+    visited[r][c] = True
+
+    # Down
+    helper(maze, r + 1, c, path + "D", ans, visited)
+    # Up
+    helper(maze, r - 1, c, path + "U", ans, visited)
+    # Left
+    helper(maze, r, c - 1, path + "L", ans, visited)
+    # Right
+    helper(maze, r, c + 1, path + "R", ans, visited)
+
+    # Backtrack
+    visited[r][c] = False
+
+
+def find_paths(maze):
+    n = len(maze)
+    ans = []
+
+    if n == 0 or maze[0][0] == 0 or maze[n - 1][n - 1] == 0:
+        return ans
+
+    visited = [[False] * n for _ in range(n)]
+    helper(maze, 0, 0, "", ans, visited)
+    return ans
+
+
+# Example
+maze = [
+    [1, 0, 0, 0],
+    [1, 1, 0, 1],
+    [1, 1, 0, 0],
+    [0, 1, 1, 1]
+]
+
+print(find_paths(maze))
+
+
+
+
+
+
+
+
+
+# Rat in a Maze Problem:
+# ----------------------
+# We are given an N×N maze where each cell is either:
+#     - 1 → open cell (rat can move here)
+#     - 0 → blocked cell (rat cannot move here)
+#
+# We start from the top-left cell (0,0) and need to reach the bottom-right cell (N-1, N-1).
+# We can only move in four directions: Up (U), Down (D), Left (L), Right (R). No diagonal moves.
+# We must not visit the same cell more than once in a single path.
+#
+# Boundary Conditions:
+# 1. If mat[0][0] == 0 → no path (start blocked).
+# 2. If mat[N-1][N-1] == 0 → no path (destination blocked).
+# 3. For each move, ensure:
+#     - newRow and newCol are within [0, N-1]
+#     - mat[newRow][newCol] == 1
+#     - vis[newRow][newCol] == False (not visited yet)
+# 4. Backtracking is required → mark current cell visited, explore neighbors, then unmark.
